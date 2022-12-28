@@ -1,3 +1,4 @@
 {
-	"telex": true
+	"telex": false,
+	"hover": false,
 }

@@ -8,6 +8,21 @@ import sublime, sublime_plugin
 
 STATUS = False
 TELEX  = False
+HOVER  = False
+
+def plugin_loaded():
+    global TELEX
+    global HOVER
+
+    settings = sublime.load_settings(FILE_NAME_SLTCF)
+    TELEX = settings.get("telex") or TELEX
+    HOVER = settings.get("hover") or HOVER
+
+    msg_ready = FILE_NAME_NOEXT + " -> READY"
+    sublime.status_message(msg_ready)
+    print(msg_ready)
+
+    return
 
 class SaveOnModifiedListener(sublime_plugin.EventListener):
   def on_modified_async(self, view):
@@ -18,7 +33,6 @@ class ControlimeCommand(sublime_plugin.TextCommand):
     global STATUS
     global TELEX
     #
-    settings = sublime.load_settings(FILE_NAME_SLTCF)
     if settings.get("telex"):
       TELEX = True
     else:
@@ -64,3 +78,22 @@ class BridgeReplaceTextCommand(sublime_plugin.TextCommand):
     cur_pos = self.view.sel()[0]
     cur_region = self.view.word(cur_pos)
     self.view.replace(edit, cur_region, text)
+
+class HoverTextEventListener(sublime_plugin.EventListener):
+  def on_hover(self, view, point, hover_zone):
+    global HOVER
+    if not HOVER: return
+
+    word = view.substr(view.word(point))
+    if not word: return
+
+    try:
+      content = "this is a popup"
+      view.show_popup(
+        "<b>" + word + "</b><br>" + content,
+        location=point,
+        max_width=800,
+        max_height=400,
+      )
+    except KeyError:
+      pass
