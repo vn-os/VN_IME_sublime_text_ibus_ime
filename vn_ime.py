@@ -1,3 +1,8 @@
+import os
+FILE_NAME = os.path.basename(__file__)
+FILE_NAME_NOEXT = os.path.splitext(FILE_NAME)[0]
+FILE_NAME_SLTCF = FILE_NAME_NOEXT + ".sublime-settings"
+
 from .bogo.core import get_vni_definition, process_sequence
 import sublime, sublime_plugin
 
@@ -35,7 +40,7 @@ class ControlimeCommand(sublime_plugin.TextCommand):
     global STATUS
     global TELEX
     #
-    settings = sublime.load_settings("Preferences.sublime-settings")
+    settings = sublime.load_settings(FILE_NAME_SLTCF)
     if settings.get("telex"):
       TELEX = True
     else:
