@@ -6,17 +6,17 @@ FILE_NAME_SLTCF = FILE_NAME_NOEXT + ".sublime-settings"
 from .bogo.core import get_vni_definition, process_sequence
 import sublime, sublime_plugin
 
-STATUS = False
-TELEX  = False
 HOVER  = False
+STATUS = False
+TELEX  = True
 
 def plugin_loaded():
     global TELEX
     global HOVER
 
     settings = sublime.load_settings(FILE_NAME_SLTCF)
-    TELEX = settings.get("telex") or TELEX
-    HOVER = settings.get("hover") or HOVER
+    TELEX = settings.get("telex", TELEX)
+    HOVER = settings.get("hover", HOVER)
 
     msg_ready = FILE_NAME_NOEXT + " -> READY"
     sublime.status_message(msg_ready)
@@ -31,22 +31,12 @@ class SaveOnModifiedListener(sublime_plugin.EventListener):
 class ControlimeCommand(sublime_plugin.TextCommand):
   def run(self, edit):
     global STATUS
-    global TELEX
-    #
-    if settings.get("telex"):
-      TELEX = True
-    else:
-      TELEX = False
-    #
-    if STATUS:
-      STATUS = False
-      self.view.set_status('VN IME'," VN IME: OFF")
-    else:
-      STATUS = True
-      self.view.set_status('VN IME'," VN IME: ON")
+    STATUS = not STATUS
+    self.view.set_status('VN IME', " VN IME: " + "ON" if STATUS else "OFF")
 
 class StartimeCommand(sublime_plugin.TextCommand):
   def run(self, edit):
+    global STATUS
     if not STATUS: return False
     cur_pos = self.view.sel()[0]
     cur_region = self.view.word(cur_pos)
@@ -55,16 +45,16 @@ class StartimeCommand(sublime_plugin.TextCommand):
     if not new_word: return False
     self.view.end_edit(edit)
     self.view.run_command("bridge_replace_text", {"text": new_word})
-    print(cur_word, "=>", new_word)
     return True
 
   def process(self, word):
+    global TELEX
     if TELEX:
-      final_word = process_sequence(word)
+      new_word = process_sequence(word)
     else:
-      final_word = process_sequence(word, rules=get_vni_definition())
-    if final_word != word:
-      return final_word
+      new_word = process_sequence(word, rules=get_vni_definition())
+    if new_word != word:
+      return new_word
     return False
 
 class BridgeReplaceTextCommand(sublime_plugin.TextCommand):
