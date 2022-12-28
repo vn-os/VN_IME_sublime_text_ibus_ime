@@ -1,12 +1,11 @@
-import os
+import os, sys
+
 FILE_DIR  = os.path.split(__file__)[0]
 FILE_NAME = os.path.basename(__file__)
 FILE_NAME_NOEXT = os.path.splitext(FILE_NAME)[0]
 FILE_NAME_SLTCF = FILE_NAME_NOEXT + ".sublime-settings"
 
-import sys
 sys.path.insert(1, os.path.join(FILE_DIR, R"3rdparty/bogo-python"))
-
 from bogo.core import get_vni_definition, process_sequence
 import sublime, sublime_plugin
 
