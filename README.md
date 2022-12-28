@@ -18,7 +18,7 @@ git clone https://github.com/yehnkay/VN_IME
 
 ## Hướng dẫn sử dụng
 
-Nhấn phím F2 để bật gõ tiếng Việt, mặc định là kiểu gõ VNI. Nhấn tiếp phím F2 để tắt
+Nhấn phím Shift F2 để bật gõ tiếng Việt, mặc định là kiểu gõ VNI. Nhấn tiếp phím Shift F2 để tắt
 
 Khi thanh status hiện chữ `VN IME : ON` là đang bật, `VN IME : OFF` là đã tắt
 
